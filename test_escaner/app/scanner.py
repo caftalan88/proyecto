@@ -1,60 +1,119 @@
-import scapy.all as scapy
 import socket
 import ipaddress
+from scapy.all import ARP, Ether, srp, sr1, IP, ICMP, conf
 
-def obtener_red_local():
-    """Detecta automáticamente el rango de red (ej. 192.168.0.0/24)."""
+def obtener_ip_local():
+    
     try:
-        # Obtiene la IP local
-        hostname = socket.gethostname()
-        ip_local = socket.gethostbyname(hostname)
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip_local = s.getsockname()[0]
+        s.close()
+        return ip_local
+    except Exception:
+        try:
+            return socket.gethostbyname(socket.gethostname())
+        except Exception:
+            return None
+        
+def obtener_red_local(prefijo_default=24):
 
-        # Calcula la red /24 según la IP local
-        ip_interface = ipaddress.ip_interface(f"{ip_local}/24")
-        red = str(ip_interface.network)
-        return red
+    ip_local = obtener_ip_local()
+    if not ip_local:
+        print("[ERROR] No se pudo determinar la IP local.")
+        return None
+    try:
+        iface_net = ipaddress.ip_interface(f"{ip_local}/{prefijo_default}")
+        return str(iface_net.network)
     except Exception as e:
-        print(f"[ERROR] No se pudo determinar la red local: {e}")
-        # Valor por defecto si falla
-        return "192.168.1.0/24"
+        print(f"[WARN] No se pudo calcular la red automaticamente: {e}")
+        return None
+    
+def arp_scan(red_cidr=None, iface=None, timeout=3):
 
-
-def escanear_red(red=None):
-    """Escanea la red local usando paquetes ARP y devuelve una lista de dispositivos activos."""
+    if red_cidr is None:
+        red_cidr = obtener_red_local()
+    if not red_cidr:
+        print("[ERROR] No hay red para escanear.")
+        return []
+    
+    print(f"[INFO] ARP scan en {red_cidr} (iface={iface})")
     try:
-        if red is None:
-            red = obtener_red_local()
+        arp_req = ARP(pdst=red_cidr)
+        ether = Ether(dst="ff:ff:ff:ff:ff:ff")
+        paquete = ether / arp_req
 
-        print(f"[INFO] Escaneando red: {red}")
-
-        # Crea el paquete ARP
-        arp_request = scapy.ARP(pdst=red)
-        broadcast = scapy.Ether(dst="ff:ff:ff:ff:ff:ff")
-        paquete = broadcast / arp_request
-
-        # Envía el paquete y recibe las respuestas
-        resultado = scapy.srp(paquete, timeout=2, verbose=0)[0]
+        ans = srp(paquete, timeout=timeout, verbose=0, iface=iface)[0]
 
         dispositivos = []
-        for _, respuesta in resultado:
+        for _, r in ans:
             try:
-                host = socket.gethostbyaddr(respuesta.psrc)[0]
+                host = socket.gethostbyaddr(r.psrc)[0]
             except socket.herror:
                 host = "Desconocido"
-            dispositivos.append({
-                "ip": respuesta.psrc,
-                "mac": respuesta.hwsrc,
-                "nombre": host
-            })
-
-        if not dispositivos:
-            print("[ADVERTENCIA] No se detectaron dispositivos. Verifica permisos o firewall.")
-
+            dispositivos.append({"ip": r.psrc, "mac": r.hwsrc, "nombre": host})
         return dispositivos
 
-    except PermissionError:
-        print("[ERROR] Permiso denegado. Ejecuta como administrador.")
-        return []
+    except RuntimeError as e:
+        
+        print(f"[ERROR] ARP scan falló: {e}")
+        print("[INFO] Intentando escaneo ICMP (fallback L3).")
+        return icmp_scan(red_cidr, timeout=timeout)
+
     except Exception as e:
-        print(f"[ERROR] Fallo al escanear la red: {e}")
+        print(f"[ERROR] Fallo ARP scan: {e}")
         return []
+
+def icmp_scan(red_cidr, timeout=1):
+    
+    try:
+        net = ipaddress.ip_network(red_cidr, strict=False)
+    except Exception as e:
+        print(f"[ERROR] Red inválida para ICMP scan: {e}")
+        return []
+
+    dispositivos = []
+    print(f"[INFO] ICMP scan en {red_cidr} (esto puede tardar)...")
+
+    for ip in net.hosts():
+        ip_str = str(ip)
+        pkt = IP(dst=ip_str)/ICMP()
+        try:
+            resp = sr1(pkt, timeout=timeout, verbose=0)
+            if resp is not None:
+                
+                try:
+                    host = socket.gethostbyaddr(ip_str)[0]
+                except Exception:
+                    host = "Desconocido"
+                dispositivos.append({"ip": ip_str, "mac": None, "nombre": host})
+        except Exception:
+            pass
+    return dispositivos
+
+def escanear_red():
+
+    red = obtener_red_local()
+    if not red:
+        print("[ERROR] No se pudo obtener la red local.")
+        return []
+    dispositivos = arp_scan(red_cidr=red, iface=None, timeout=3)
+    if not dispositivos:
+        print("[ADVERTENCIA] No se encontraron dispositivos. Verifica Npcap, AP isolation o firewall.")
+        dispositivos = icmp_scan(red_cidr=red, timeout=2)
+    return dispositivos
+
+if __name__ == "__main__":
+    
+    red = obtener_red_local()
+    print("[INFO] Red detectada:", red)
+    dispositivos = escanear_red()
+    if not dispositivos:
+        print("[ADVERTENCIA] No se encontraron dispositivos con ARP/ICMP.")
+    else:
+        print("[RESULTADO] Dispositivos detectados:")
+        for d in dispositivos:
+            print(f" - {d['ip']} | MAC: {d['mac']} | Nombre: {d['nombre']}")
+        
+        
+
