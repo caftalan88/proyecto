@@ -1,1 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Monitor IoT Hogar - Dashboard</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<header>
+    <h1>Monitor de Seguridad IoT del Hogar</h1>
+    <p>Vista general del estado de la red doméstica y sus dispositivos conectados.</p>
+</header>
+
+<main>
+    <section class="kpi-container">
+        <div class="kpi-card">
+            <h2>Dispositivos actuales</h2>
+            <p id="kpi-total-dispositivos">-</p>
+        </div>
+        <div class="kpi-card riesgo-alto">
+            <h2>Riesgo alto</h2>
+            <p id="kpi-riesgo-alto">-</p>
+        </div>
+        <div class="kpi-card riesgo-medio">
+            <h2>Riesgo medio</h2>
+            <p id="kpi-riesgo-medio">-</p>
+        </div>
+        <div class="kpi-card">
+            <h2>Último escaneo</h2>
+            <p id="kpi-ultimo-escaneo">-</p>
+        </div>
+    </section>
+
+    <section class="actions">
+        <button id="btn-escanear">Forzar nuevo escaneo</button>
+        <span id="estado-escaneo"></span>
+    </section>
+
+    <section class="grid">
+        
+            
+            
+          
+
+        <div class="panel">
+            <h2>Alertas recientes</h2>
+            <ul id="lista-alertas" class="alert-list"></ul>
+        </div>
+        <div class="panel" style="height:300px; overflow:hidden;">
+            <h2>Historial de escaneos</h2>
+            <div style="height:240px;">
+              <canvas id="chartHistorial"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>Dispositivos detectados</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>IP</th>
+                <th>MAC</th>
+                <th>Nombre</th>
+                <th>Riesgo</th>
+                <th>Latencia (ms)</th>
+                <th>Puertos abiertos</th>
+            </tr>
+            </thead>
+            <tbody id="tabla-dispositivos">
+            </tbody>
+        </table>
+    </section>
+
+    <section class="panel">
+        <h2>Resumen y sugerencias</h2>
+        <div id="resumen-texto">
+            <p>Cargando resumen...</p>
+        </div>
+    </section>
+</main>
+
+<script src="/static/js/dashboard.js"></script>
+</body>
+</html>
 
