@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Resultados del Análisis de Red</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#1173d4",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101922",
+          },
+          fontFamily: {
+            "display": ["Inter"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+    }
+  </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark">
+<div class="relative flex min-h-screen w-full">
+  <aside class="flex h-screen w-64 flex-col border-r border-slate-200 bg-background-light p-4 dark:border-slate-800 dark:bg-background-dark">
+    <div class="flex flex-col gap-4">
+      <div class="mb-8 flex items-center gap-3">
+        <div class="flex size-10 items-center justify-center rounded-lg bg-primary text-white">
+          <span class="material-symbols-outlined !text-2xl">shield</span>
+        </div>
+        <h1 class="text-lg font-bold text-slate-800 dark:text-white">NetGuard</h1>
+      </div>
+      <div class="flex flex-col gap-2">
+        <a href="{{ url_for('main.dashboard') }}"
+           class="flex items-center gap-3 rounded-lg px-3 py-2 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800">
+          <span class="material-symbols-outlined">dashboard</span>
+          <p class="text-sm font-medium">Dashboard</p>
+        </a>
+        <a href="{{ url_for('main.resultado_escaneo') }}"
+           class="flex items-center gap-3 rounded-lg bg-primary/10 px-3 py-2 text-primary dark:bg-primary/20">
+          <span class="material-symbols-outlined">scanner</span>
+          <p class="text-sm font-medium">Análisis de Red</p>
+        </a>
+        <a href="{{ url_for('main.historial_escaneos') }}"
+           class="flex items-center gap-3 rounded-lg px-3 py-2 text-slate-600 hover:text-primary hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800">
+          <span class="material-symbols-outlined">history</span>
+          <p class="text-sm font-medium">Historial</p>
+        </a>
+      </div>
+    </div>
+    <div class="mt-auto flex flex-col gap-4">
+      <div class="flex items-center gap-3">
+        <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+             data-alt="Avatar de usuario"
+             style="background-image: url('https://lh3.googleusercontent.com/a-/AOh14Gj');"></div>
+        <div class="flex flex-col">
+          <h1 class="text-sm font-medium text-slate-800 dark:text-white">Usuario</h1>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Plan Premium</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 overflow-y-auto p-8">
+    <div class="mx-auto max-w-7xl">
+      <!-- PageHeading -->
+      <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex flex-col gap-1">
+          <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+            Análisis de Red Completado
+          </h1>
+          <p class="text-slate-500 dark:text-slate-400">
+            Se encontraron {{ total_dispositivos }} dispositivos en tu red.
+          </p>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="flex flex-1 flex-col gap-2 rounded-xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+          <div class="flex items-center gap-2">
+            <span class="h-2 w-2 rounded-full bg-green-500"></span>
+            <p class="text-base font-medium text-slate-600 dark:text-slate-300">Seguro</p>
+          </div>
+          <p class="text-3xl font-bold text-slate-900 dark:text-white">{{ stats.seguro }}</p>
+        </div>
+        <div class="flex flex-1 flex-col gap-2 rounded-xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+          <div class="flex items-center gap-2">
+            <span class="h-2 w-2 rounded-full bg-orange-400"></span>
+            <p class="text-base font-medium text-slate-600 dark:text-slate-300">Nuevo</p>
+          </div>
+          <p class="text-3xl font-bold text-slate-900 dark:text-white">{{ stats.nuevo }}</p>
+        </div>
+        <div class="flex flex-1 flex-col gap-2 rounded-xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+          <div class="flex items-center gap-2">
+            <span class="h-2 w-2 rounded-full bg-red-500"></span>
+            <p class="text-base font-medium text-slate-600 dark:text-slate-300">Sospechoso</p>
+          </div>
+          <p class="text-3xl font-bold text-slate-900 dark:text-white">{{ stats.sospechoso }}</p>
+        </div>
+      </div>
+
+      <div class="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+        <!-- Tabs -->
+        <div class="flex gap-2 border-b border-slate-200 p-4 dark:border-slate-800">
+          <button
+            class="tab-filter flex h-8 items-center justify-center gap-x-2 rounded-lg bg-primary/10 px-4 text-sm font-medium text-primary dark:bg-primary/20"
+            data-filter="all">
+            Todos
+          </button>
+          <button
+            class="tab-filter flex h-8 items-center justify-center gap-x-2 rounded-lg px-4 text-sm font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+            data-filter="seguro">
+            Seguro
+          </button>
+          <button
+            class="tab-filter flex h-8 items-center justify-center gap-x-2 rounded-lg px-4 text-sm font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+            data-filter="nuevo">
+            Nuevo
+          </button>
+          <button
+            class="tab-filter flex h-8 items-center justify-center gap-x-2 rounded-lg px-4 text-sm font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+            data-filter="sospechoso">
+            Sospechoso
+          </button>
+        </div>
+
+        <!-- Tabla -->
+        <div class="overflow-x-auto">
+          <table class="min-w-full table-fixed divide-y divide-slate-800">
+            <thead class="bg-slate-900/60">
+              <tr>
+                <th class="w-32 px-6 py-3 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                  Estado
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                  Nombre del dispositivo
+                </th>
+                <th class="w-40 px-6 py-3 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                  Tipo
+                </th>
+                <th class="w-64 px-6 py-3 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                  Dirección IP / MAC
+                </th>
+                <th class="w-44 px-6 py-3 text-right text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                  Acción
+                </th>
+              </tr>
+            </thead>
+
+            <tbody class="divide-y divide-slate-800">
+              {% for d in dispositivos %}
+              {# ⚠️ aquí usamos d.estado, no d.riesgo #}
+              {% set row_status = (d.estado or 'desconocido') | lower %}
+              <tr
+                class="border-t border-slate-800 hover:bg-slate-800/40"
+                data-status-row
+                data-status="{{ row_status }}">
+                <!-- Estado -->
+                <td class="px-6 py-4 whitespace-nowrap">
+                  {% if d.estado == "seguro" %}
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                 bg-emerald-500/10 text-emerald-400">
+                      ● Seguro
+                    </span>
+
+                  {% elif d.estado == "nuevo" %}
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                 bg-orange-500/10 text-orange-400">
+                      ● Nuevo
+                    </span>
+
+                  {% elif d.estado == "sospechoso" %}
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                 bg-red-500/10 text-red-400">
+                      ● Sospechoso
+                    </span>
+
+                  {% else %}
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                 bg-slate-500/10 text-slate-400">
+                      ● Desconocido
+                    </span>
+                  {% endif %}
+                </td>
+
+                <!-- Nombre del dispositivo (acortado con tooltip) -->
+                <td class="px-6 py-4 whitespace-nowrap max-w-xs">
+                  {% set raw_name = d.nombre or "Desconocido" %}
+                  {% set short_name = raw_name.split('(')[0] | trim %}
+                  <span class="block max-w-[260px] truncate text-sm font-medium text-slate-50"
+                        title="{{ raw_name }}">
+                    {{ short_name }}
+                  </span>
+                </td>
+
+                <!-- Tipo -->
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
+                  {{ d.tipo or "Desconocido" }}
+                </td>
+
+                <!-- IP / MAC -->
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
+                  {{ d.ip }} / {{ d.mac or "MAC desconocida" }}
+                </td>
+
+                <!-- Acción -->
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <a href="{{ url_for('main.detalle_dispositivo', dispositivo_id=d.id) }}"
+                     class="inline-flex items-center rounded-xl bg-primary px-4 py-2 text-xs font-semibold
+                            text-white hover:bg-primary/90">
+                    Analizar Dispositivo
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const tabs = document.querySelectorAll('.tab-filter');
+  const rows = document.querySelectorAll('[data-status-row]');
+
+  function setActiveTab(activeTab) {
+    tabs.forEach(tab => {
+      tab.classList.remove('bg-primary/10', 'text-primary', 'dark:bg-primary/20');
+      tab.classList.add('text-slate-600', 'dark:text-slate-300');
+    });
+    activeTab.classList.add('bg-primary/10', 'text-primary', 'dark:bg-primary/20');
+    activeTab.classList.remove('text-slate-600', 'dark:text-slate-300');
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const filtro = tab.dataset.filter; // all / seguro / nuevo / sospechoso
+      setActiveTab(tab);
+
+      rows.forEach(row => {
+        const status = (row.dataset.status || '').toLowerCase();
+        if (filtro === 'all' || status === filtro) {
+          row.classList.remove('hidden');
+        } else {
+          row.classList.add('hidden');
+        }
+      });
+    });
+  });
+});
+</script>
+</body>
+</html>
