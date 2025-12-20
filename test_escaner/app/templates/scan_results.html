@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>Resultados del Análisis de Red</title>
+  <title>NetGuard | Resultados de escaneo</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
@@ -41,50 +41,43 @@
   </style>
 </head>
 <body class="font-display bg-background-light dark:bg-background-dark">
-<div class="relative flex min-h-screen w-full">
-  <aside class="flex h-screen w-64 flex-col border-r border-slate-200 bg-background-light p-4 dark:border-slate-800 dark:bg-background-dark">
-    <div class="flex flex-col gap-4">
-      <div class="mb-8 flex items-center gap-3">
-        <div class="flex size-10 items-center justify-center rounded-lg bg-primary text-white">
-          <span class="material-symbols-outlined !text-2xl">shield</span>
-        </div>
-        <h1 class="text-lg font-bold text-slate-800 dark:text-white">NetGuard</h1>
+<div class="min-h-screen flex">
+  <aside class="fixed inset-y-0 left-0 w-64 bg-slate-900/80 backdrop-blur border-r border-slate-700/60 p-4">
+    <div class="flex items-center gap-3 mb-6">
+      <div class="w-10 h-10 rounded-2xl bg-emerald-500/15 flex items-center justify-center text-emerald-400">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6" fill="currentColor" aria-hidden="true">
+          <path d="M12 2l7 4v6c0 5-3.5 9.5-7 10-3.5-.5-7-5-7-10V6l7-4zm0 3.1L7 7.7V12c0 3.8 2.6 7.2 5 7.8 2.4-.6 5-4 5-7.8V7.7l-5-2.6zm-1 5.4l3 0 0 2-3 0v-2zm0-3l3 0 0 2-3 0v-2z"/>
+        </svg>
       </div>
-      <div class="flex flex-col gap-2">
-        <a href="{{ url_for('main.dashboard') }}"
-           class="flex items-center gap-3 rounded-lg px-3 py-2 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800">
-          <span class="material-symbols-outlined">dashboard</span>
-          <p class="text-sm font-medium">Dashboard</p>
-        </a>
-        <a href="{{ url_for('main.resultado_escaneo') }}"
-           class="flex items-center gap-3 rounded-lg bg-primary/10 px-3 py-2 text-primary dark:bg-primary/20">
-          <span class="material-symbols-outlined">scanner</span>
-          <p class="text-sm font-medium">Análisis de Red</p>
-        </a>
-        <a href="{{ url_for('main.historial_escaneos') }}"
-           class="flex items-center gap-3 rounded-lg px-3 py-2 text-slate-600 hover:text-primary hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800">
-          <span class="material-symbols-outlined">history</span>
-          <p class="text-sm font-medium">Historial</p>
-        </a>
+      <div class="leading-tight">
+        <div class="text-lg font-bold text-white">NetGuard</div>
+        <div class="text-xs text-slate-300">Seguridad para hogares</div>
       </div>
     </div>
-    <div class="mt-auto flex flex-col gap-4">
-      <div class="flex items-center gap-3">
-        <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
-             data-alt="Avatar de usuario"
-             style="background-image: url('https://lh3.googleusercontent.com/a-/AOh14Gj');"></div>
-        <div class="flex flex-col">
-          <h1 class="text-sm font-medium text-slate-800 dark:text-white">Usuario</h1>
-          <p class="text-xs text-slate-500 dark:text-slate-400">Plan Premium</p>
-        </div>
-      </div>
-    </div>
+
+    <nav class="space-y-2">
+      <a href="{{ url_for('main.dashboard') }}"
+         class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold text-slate-200 hover:bg-slate-800/70">
+        <span>🏠</span><span>Dashboard</span>
+      </a>
+      <a href="{{ url_for('main.listar_dispositivos') }}"
+         class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold text-slate-200 hover:bg-slate-800/70">
+        <span>🖧</span><span>Resultados</span>
+      </a>
+      <a href="{{ url_for('main.historial') }}"
+         class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold text-slate-200 hover:bg-slate-800/70">
+        <span>🕘</span><span>Historial</span>
+      </a>
+      <a href="{{ url_for('main.exportar_informe_excel') }}"
+         class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold
+                text-emerald-400 hover:bg-slate-800/70">
+        <span>📊</span><span>Informe</span>
+      </a>
+    </nav>
   </aside>
 
-  <!-- Main Content -->
-  <main class="flex-1 overflow-y-auto p-8">
-    <div class="mx-auto max-w-7xl">
-      <!-- PageHeading -->
+  <main class="flex-1 ml-64 p-6">
+<div class="mx-auto max-w-7xl">
       <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div class="flex flex-col gap-1">
           <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
@@ -96,7 +89,6 @@
         </div>
       </div>
 
-      <!-- Stats -->
       <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div class="flex flex-1 flex-col gap-2 rounded-xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
           <div class="flex items-center gap-2">
@@ -122,7 +114,6 @@
       </div>
 
       <div class="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
-        <!-- Tabs -->
         <div class="flex gap-2 border-b border-slate-200 p-4 dark:border-slate-800">
           <button
             class="tab-filter flex h-8 items-center justify-center gap-x-2 rounded-lg bg-primary/10 px-4 text-sm font-medium text-primary dark:bg-primary/20"
@@ -146,7 +137,6 @@
           </button>
         </div>
 
-        <!-- Tabla -->
         <div class="overflow-x-auto">
           <table class="min-w-full table-fixed divide-y divide-slate-800">
             <thead class="bg-slate-900/60">
@@ -171,13 +161,11 @@
 
             <tbody class="divide-y divide-slate-800">
               {% for d in dispositivos %}
-              {# ⚠️ aquí usamos d.estado, no d.riesgo #}
               {% set row_status = (d.estado or 'desconocido') | lower %}
               <tr
                 class="border-t border-slate-800 hover:bg-slate-800/40"
                 data-status-row
                 data-status="{{ row_status }}">
-                <!-- Estado -->
                 <td class="px-6 py-4 whitespace-nowrap">
                   {% if d.estado == "seguro" %}
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
@@ -205,7 +193,6 @@
                   {% endif %}
                 </td>
 
-                <!-- Nombre del dispositivo (acortado con tooltip) -->
                 <td class="px-6 py-4 whitespace-nowrap max-w-xs">
                   {% set raw_name = d.nombre or "Desconocido" %}
                   {% set short_name = raw_name.split('(')[0] | trim %}
@@ -215,17 +202,13 @@
                   </span>
                 </td>
 
-                <!-- Tipo -->
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
                   {{ d.tipo or "Desconocido" }}
                 </td>
 
-                <!-- IP / MAC -->
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
                   {{ d.ip }} / {{ d.mac or "MAC desconocida" }}
                 </td>
-
-                <!-- Acción -->
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <a href="{{ url_for('main.detalle_dispositivo', dispositivo_id=d.id) }}"
                      class="inline-flex items-center rounded-xl bg-primary px-4 py-2 text-xs font-semibold
@@ -240,8 +223,6 @@
         </div>
       </div>
     </div>
-  </main>
-</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -259,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      const filtro = tab.dataset.filter; // all / seguro / nuevo / sospechoso
+      const filtro = tab.dataset.filter; 
       setActiveTab(tab);
 
       rows.forEach(row => {
@@ -274,5 +255,9 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 </script>
+
+  </main>
+</div>
+
 </body>
 </html>
