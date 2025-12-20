@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>Detalle de Dispositivo - IoT Security</title>
+  <title>NetGuard | Detalle de dispositivo</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
@@ -41,54 +41,48 @@
   </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200">
-<div class="relative flex min-h-screen w-full">
-  <!-- SideNavBar -->
-  <aside class="flex h-screen flex-col justify-between bg-white dark:bg-[#111a22] p-4 w-64 sticky top-0">
-    <div class="flex flex-col gap-4">
-      <div class="flex items-center gap-3">
-        <span class="material-symbols-outlined rounded-full size-10 flex items-center justify-center bg-primary/20 text-primary">
-          security
-        </span>
-        <div class="flex flex-col">
-          <h1 class="text-black dark:text-white text-base font-medium leading-normal">Panel IoT</h1>
-          <p class="text-gray-500 dark:text-[#92adc9] text-sm leading-normal">Monitoreo Doméstico</p>
-        </div>
+<div class="min-h-screen flex">
+  <aside class="fixed inset-y-0 left-0 w-64 bg-slate-900/80 backdrop-blur border-r border-slate-700/60 p-4">
+    <div class="flex items-center gap-3 mb-6">
+      <div class="w-10 h-10 rounded-2xl bg-emerald-500/15 flex items-center justify-center text-emerald-400">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6" fill="currentColor" aria-hidden="true">
+          <path d="M12 2l7 4v6c0 5-3.5 9.5-7 10-3.5-.5-7-5-7-10V6l7-4zm0 3.1L7 7.7V12c0 3.8 2.6 7.2 5 7.8 2.4-.6 5-4 5-7.8V7.7l-5-2.6zm-1 5.4l3 0 0 2-3 0v-2zm0-3l3 0 0 2-3 0v-2z"/>
+        </svg>
       </div>
-      <nav class="flex flex-col gap-2 mt-4">
-        <a href="{{ url_for('main.dashboard') }}"
-           class="flex items-center gap-3 px-3 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-primary/20 rounded-lg">
-          <span class="material-symbols-outlined">dashboard</span>
-          <p class="text-sm font-medium leading-normal">Dashboard</p>
-        </a>
-        <a href="{{ url_for('main.resultado_escaneo') }}"
-           class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/20 text-primary dark:bg-primary/30 dark:text-white">
-          <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">devices</span>
-          <p class="text-sm font-medium leading-normal">Dispositivos</p>
-        </a>
-        <a href="{{ url_for('main.historial_escaneos') }}"
-           class="flex items-center gap-3 px-3 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-primary/20 rounded-lg">
-          <span class="material-symbols-outlined">history</span>
-          <p class="text-sm font-medium leading-normal">Historial</p>
-        </a>
-      </nav>
+      <div class="leading-tight">
+        <div class="text-lg font-bold text-white">NetGuard</div>
+        <div class="text-xs text-slate-300">Seguridad para hogares</div>
+      </div>
     </div>
-    <div class="flex flex-col gap-1">
-      <a class="flex items-center gap-3 px-3 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-primary/20 rounded-lg" href="#">
-        <span class="material-symbols-outlined">help</span>
-        <p class="text-sm font-medium leading-normal">Ayuda</p>
+
+    <nav class="space-y-2">
+      <a href="{{ url_for('main.dashboard') }}"
+         class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold text-slate-200 hover:bg-slate-800/70">
+        <span>🏠</span><span>Dashboard</span>
       </a>
-    </div>
+      <a href="{{ url_for('main.listar_dispositivos') }}"
+         class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold text-slate-200 hover:bg-slate-800/70">
+        <span>🖧</span><span>Resultados</span>
+      </a>
+      <a href="{{ url_for('main.historial') }}"
+         class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold text-slate-200 hover:bg-slate-800/70">
+        <span>🕘</span><span>Historial</span>
+      </a>
+      <a href="{{ url_for('main.exportar_informe_excel') }}"
+         class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold
+                text-emerald-400 hover:bg-slate-800/70">
+        <span>📊</span><span>Informe</span>
+      </a>
+    </nav>
   </aside>
 
-  <!-- Main Content -->
-  <main class="flex-1 p-8 overflow-y-auto">
-    <div class="max-w-7xl mx-auto">
-      <!-- Breadcrumbs -->
+  <main class="flex-1 ml-64 p-6">
+<div class="max-w-7xl mx-auto">
       <div class="flex flex-wrap gap-2 mb-6">
         <a href="{{ url_for('main.dashboard') }}"
            class="text-gray-500 dark:text-[#92adc9] text-sm font-medium leading-normal hover:text-primary">Dashboard</a>
         <span class="text-gray-500 dark:text-[#92adc9] text-sm font-medium leading-normal">/</span>
-        <a href="{{ url_for('main.resultado_escaneo') }}"
+        <a href="{{ url_for('main.listar_dispositivos') }}"
            class="text-gray-500 dark:text-[#92adc9] text-sm font-medium leading-normal hover:text-primary">Dispositivos</a>
         <span class="text-gray-500 dark:text-[#92adc9] text-sm font-medium leading-normal">/</span>
         <span class="text-gray-800 dark:text-white text-sm font-medium leading-normal">
@@ -97,7 +91,6 @@
       </div>
 
       <div class="bg-white dark:bg-[#111a22] rounded-xl shadow-sm p-6 @container">
-        <!-- Header -->
         <div class="flex w-full flex-col gap-6 @[640px]:flex-row @[640px]:justify-between @[640px]:items-start border-b border-gray-200 dark:border-[#324d67] pb-6 mb-6">
           <div class="flex gap-4 items-center">
             <div class="bg-primary/10 dark:bg-primary/20 text-primary dark:text-white rounded-lg p-4 flex items-center justify-center size-24">
@@ -107,19 +100,22 @@
               <p class="text-gray-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em]">
                 {{ dispositivo.nombre or "Dispositivo IoT" }}
               </p>
+              <form method="POST" action="{{ url_for('main.renombrar_dispositivo', dispositivo_id=dispositivo.id) }}" class="mt-3 flex flex-wrap items-center gap-2">
+                <input name="nombre" type="text" value="{{ dispositivo.nombre or '' }}" class="h-9 w-64 rounded-lg bg-transparent border border-gray-700 px-3 text-sm text-white placeholder:text-gray-400" placeholder="Nombre del dispositivo"/>
+                <button type="submit" class="h-9 rounded-lg bg-[#24384a] px-3 text-sm font-semibold text-white hover:bg-[#2c465e]">Guardar nombre</button>
+              </form>
               <p class="text-gray-500 dark:text-[#92adc9] text-base font-normal leading-normal">
                 IP: {{ dispositivo.ip }}{% if dispositivo.mac %} · MAC: {{ dispositivo.mac }}{% endif %}
               </p>
 
-              {# --- Badge de estado / riesgo --- #}
               {% set riesgo = (dispositivo.riesgo or 'Desconocido') %}
-              {% set estado = (dispositivo.estado or 'activo') %}
+              {% set estado = (dispositivo.estado or 'desconocido')|lower %}
 
               {% if estado == 'bloqueado' %}
                 {% set badge_bg = 'bg-red-100 dark:bg-red-500/20' %}
                 {% set badge_dot = 'bg-red-500' %}
                 {% set badge_text = 'text-red-700 dark:text-red-300' %}
-                {% set badge_label = 'Bloqueado' %}
+                {% set badge_label = 'Estado: Bloqueado' %}
               {% else %}
                 {% if riesgo.lower() == 'alto' %}
                   {% set badge_bg = 'bg-red-100 dark:bg-red-500/20' %}
@@ -134,7 +130,8 @@
                   {% set badge_dot = 'bg-green-500' %}
                   {% set badge_text = 'text-green-700 dark:text-green-300' %}
                 {% endif %}
-                {% set badge_label = 'Estado: ' ~ riesgo %}
+
+                {% set badge_label = 'Estado: ' ~ estado %}
               {% endif %}
 
               <div class="mt-2 inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-medium w-fit {{ badge_bg }} {{ badge_text }}">
@@ -145,7 +142,7 @@
           </div>
 
           <div class="flex w-full gap-3 @[640px]:w-auto flex-col @[480px]:flex-row">
-            <a href="{{ url_for('main.historial_escaneos') }}"
+            <a href="{{ url_for('main.historial') }}"
                class="flex min-w-[84px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 bg-gray-200 dark:bg-[#233648] text-gray-800 dark:text-white text-sm font-bold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
               <span class="material-symbols-outlined text-base">history</span>
               <span class="truncate">Ver Historial</span>
@@ -174,7 +171,6 @@
         </div>
 
         <div class="grid grid-cols-1 @[768px]:grid-cols-2 gap-8">
-          <!-- Columna izquierda: detalles técnicos -->
           <div>
             <h2 class="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] mb-4">
               Detalles técnicos
@@ -252,30 +248,27 @@
             </div>
           </div>
 
-          <!-- Columna derecha: gráfico dinámico -->
           <div>
             <h2 class="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] mb-4">
-              Actividad de red (referencial)
+              Evolución de escaneos (actividad estimada)
             </h2>
 
             <div class="rounded-lg bg-gray-50 dark:bg-[#1f2937]/50 p-4 h-72 flex flex-col justify-between">
-              <!-- Valores actuales -->
               <div class="flex justify-between items-start mb-2">
                 <div class="flex flex-col">
-                  <span class="text-xs text-gray-500 dark:text-[#92adc9]">Upload</span>
+                  <span class="text-xs text-gray-500 dark:text-[#92adc9]">Actividad estimada (0-100) - último</span>
                   <p class="text-base font-bold text-gray-900 dark:text-white">
-                    {{ traffic_data.upload_current }} Mbps
+                    <span id="activityCurrent" class="font-bold">—</span>
                   </p>
                 </div>
                 <div class="flex flex-col text-right">
-                  <span class="text-xs text-gray-500 dark:text-[#92adc9]">Download</span>
+                  <span class="text-xs text-gray-500 dark:text-[#92adc9]"></span>
                   <p class="text-base font-bold text-gray-900 dark:text-white">
-                    {{ traffic_data.download_current }} Mbps
+                    
                   </p>
                 </div>
               </div>
 
-              <!-- Canvas del gráfico -->
               <div class="flex-1 pt-3">
                 <canvas id="trafficChart" class="w-full h-full"></canvas>
               </div>
@@ -291,52 +284,69 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const trafficData = JSON.parse('{{ traffic_data | tojson | safe }}');
 
+document.addEventListener("DOMContentLoaded", () => {
+  const deviceId = {{ dispositivo.id }};
   const ctx = document.getElementById("trafficChart").getContext("2d");
 
-  new Chart(ctx, {
+  const chart = new Chart(ctx, {
     type: "bar",
     data: {
-      labels: trafficData.labels,
-      datasets: [
-        {
-          label: "Upload (Mbps)",
-          data: trafficData.upload,
-          backgroundColor: "rgba(59, 130, 246, 0.6)",   
-          borderRadius: 4,
-        },
-        {
-          label: "Download (Mbps)",
-          data: trafficData.download,
-          backgroundColor: "rgba(16, 185, 129, 0.6)",   
-          borderRadius: 4,
-        }
-      ]
+      labels: [],
+      datasets: [{
+        label: "Actividad estimada (0-100)",
+        data: [],
+        backgroundColor: "rgba(59, 130, 246, 0.6)",
+        borderColor: "rgba(59, 130, 246, 1)",
+        borderWidth: 1,
+        borderRadius: 6
+      }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       scales: {
-        x: {
-          ticks: { color: "#94a3b8" },
-          grid: { display: false }
-        },
         y: {
-          beginAtZero: true,
-          ticks: { color: "#94a3b8" },
-          grid: { color: "rgba(148, 163, 184, 0.2)" }
+          min: 0,
+          max: 100,
+          ticks: { stepSize: 20 }
         }
       },
       plugins: {
-        legend: {
-          labels: { color: "#e5e7eb" }
-        }
+        legend: { display: true }
       }
     }
   });
+
+  async function refreshChart() {
+    try {
+      const res = await fetch(`/api/dispositivo/${deviceId}/chart-data`);
+      const json = await res.json();
+      if (!json.ok) return;
+
+      const labels = json.labels || [];
+      const values = json.actividad_score || json.data || [];
+
+      chart.data.labels = labels;
+      chart.data.datasets[0].data = values;
+      chart.update();
+
+      const last = values.length ? values[values.length - 1] : 0;
+      const el = document.getElementById("activityCurrent");
+      if (el) el.textContent = String(last);
+
+    } catch (e) {
+      console.error("Error refreshChart:", e);
+    }
+  }
+
+  refreshChart();
+  setInterval(refreshChart, 8000);
 });
 </script>
+
+</main>
+</div>
+
 </body>
 </html>
