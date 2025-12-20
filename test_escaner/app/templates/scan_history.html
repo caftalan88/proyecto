@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>Home Security Monitor - Historial de Escaneos</title>
+  <title>NetGuard | Historial de escaneos</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
@@ -44,6 +44,38 @@
   </style>
 </head>
 <body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+<div class="min-h-screen flex">
+  <aside class="fixed inset-y-0 left-0 w-64 bg-slate-900/80 backdrop-blur border-r border-slate-700/60 p-4">
+    <div class="flex items-center gap-3 mb-6">
+      <div class="w-10 h-10 rounded-2xl bg-emerald-500/15 flex items-center justify-center text-emerald-400">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6" fill="currentColor" aria-hidden="true">
+          <path d="M12 2l7 4v6c0 5-3.5 9.5-7 10-3.5-.5-7-5-7-10V6l7-4zm0 3.1L7 7.7V12c0 3.8 2.6 7.2 5 7.8 2.4-.6 5-4 5-7.8V7.7l-5-2.6zm-1 5.4l3 0 0 2-3 0v-2zm0-3l3 0 0 2-3 0v-2z"/>
+        </svg>
+      </div>
+      <div class="leading-tight">
+        <div class="text-lg font-bold text-white">NetGuard</div>
+        <div class="text-xs text-slate-300">Seguridad para hogares</div>
+      </div>
+    </div>
+
+    <nav class="space-y-2">
+      <a href="{{ url_for('main.dashboard') }}"
+         class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold text-slate-200 hover:bg-slate-800/70">
+        <span>🏠</span><span>Dashboard</span>
+      </a>
+      <a href="{{ url_for('main.listar_dispositivos') }}"
+         class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold text-slate-200 hover:bg-slate-800/70">
+        <span>🖧</span><span>Resultados</span>
+      </a>
+      <a href="{{ url_for('main.historial') }}"
+         class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold text-slate-200 hover:bg-slate-800/70">
+        <span>🕘</span><span>Historial</span>
+      </a>      
+    </nav>
+  </aside>
+
+  <main class="flex-1 ml-64 p-6">
+
 <div class="relative flex h-auto min-h-screen w-full flex-col">
   <div class="layout-container flex h-full grow flex-col">
     <div class="flex flex-1 justify-center px-4 sm:px-8 md:px-16 lg:px-24 xl:px-40 py-5">
@@ -55,16 +87,7 @@
                 <path d="M6 6H42L36 24L42 42H6L12 24L6 6Z" fill="currentColor"></path>
               </svg>
             </div>
-            <h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">Home Security Monitor</h2>
-          </div>
-          <div class="flex flex-1 justify-end items-center gap-6">
-            <nav class="hidden md:flex items-center gap-6">
-              <a href="{{ url_for('main.dashboard') }}"
-                 class="text-sm font-medium leading-normal hover:text-primary transition-colors">Dashboard</a>
-              <a href="{{ url_for('main.resultado_escaneo') }}"
-                 class="text-sm font-medium leading-normal hover:text-primary transition-colors">Devices</a>
-              <a class="text-sm font-medium leading-normal text-primary" href="#">History</a>
-            </nav>
+            <h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">NetGuard</h2>
           </div>
         </header>
 
@@ -88,61 +111,33 @@
                       Fecha y Hora
                     </th>
                     <th class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider text-subtle-text-light dark:text-subtle-text-dark">
-                      Dispositivos Detectados
+                      Total disp.
                     </th>
                     <th class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider text-subtle-text-light dark:text-subtle-text-dark">
-                      Variación
-                    </th>
-                    <th class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider text-subtle-text-light dark:text-subtle-text-dark">
-                      Acciones
+                      Vulnerables
                     </th>
                   </tr>
-                  </thead>
+                </thead>
                   <tbody class="divide-y divide-border-light dark:divide-border-dark">
-                    {% for e in registros %}
+                    {% for e in escaneos %}
                       <tr>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">
-                          {{ e.fecha.strftime("%d %b %Y, %H:%M") }}
+                          {{ e.fecha.strftime("%d-%m-%Y, %H:%M:%S") }}
                         </td>
-
                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                           {{ e.total_dispositivos }}
                         </td>
-
-                        <td class="px-6 py-4 whitespace-nowrap">
-                          {% if e.variacion_tipo == "positivo" %}
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                         bg-emerald-500/15 text-emerald-400">
-                              {{ e.variacion_texto }}
-                            </span>
-                          {% elif e.variacion_tipo == "negativo" %}
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                         bg-red-500/15 text-red-400">
-                              {{ e.variacion_texto }}
-                            </span>
-                          {% else %}
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                         bg-slate-700/60 text-slate-300">
-                              {{ e.variacion_texto }}
-                            </span>
-                          {% endif %}
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                          {{ e.dispositivos_vulnerables }}
                         </td>
-                          
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                         <a class="text-primary hover:underline"
-                            href="{{ url_for('main.resultado_escaneo') }}">
-                           Ver Detalles
-                         </a>
-                       </td>
-                     </tr>
-                   {% else %}
-                     <tr>
-                       <td colspan="4"
-                           class="px-6 py-4 text-center text-sm text-subtle-text-light dark:text-subtle-text-dark">
-                         Aún no hay escaneos registrados. Ejecuta un escaneo desde el dashboard.
-                       </td>
-                     </tr>
-                   {% endfor %}
+                      </tr>
+                    {% else %}
+                      <tr>
+                        <td colspan="3" class="px-6 py-4 text-center text-sm text-subtle-text-light dark:text-subtle-text-dark">
+                          Aún no hay escaneos registrados. Ejecuta un escaneo desde el dashboard.
+                        </td>
+                      </tr>
+                    {% endfor %}
                   </tbody>
                 </table>
               </div>
@@ -154,5 +149,9 @@
     </div>
   </div>
 </div>
+
+  </main>
+</div>
+
 </body>
 </html>
