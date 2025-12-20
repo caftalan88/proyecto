@@ -1,5 +1,6 @@
 from datetime import datetime
 from . import db
+from sqlalchemy.orm import synonym
 
 
 class Dispositivo(db.Model):
@@ -12,6 +13,7 @@ class Dispositivo(db.Model):
     tipo = db.Column(db.String(50), default="Desconocido")
     riesgo = db.Column(db.String(20), default="Desconocido")
     fecha_ultima_visto = db.Column(db.DateTime, default=datetime.utcnow)
+    ultimo_escaneo = synonym("fecha_ultima_visto")
 
     estado = db.Column(db.String(20), default="activo")
 
@@ -56,3 +58,30 @@ class EventoRed(db.Model):
 
     def __repr__(self):
         return f"<Evento {self.tipo} - {self.ip}>"
+
+
+
+class DispositivoEscaneo(db.Model):
+    __tablename__ = "dispositivo_escaneo"
+
+    id = db.Column(db.Integer, primary_key=True)
+    dispositivo_id = db.Column(db.Integer, db.ForeignKey("dispositivo.id"), nullable=False)
+    fecha = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    consumo_upload_mb = db.Column(db.Float, default=0.0)
+    consumo_download_mb = db.Column(db.Float, default=0.0)
+    consumo_total_mb = db.Column(db.Float, default=0.0)
+
+    actividad_score = db.Column(db.Float, default=0.0)
+    rtt_ms = db.Column(db.Float, nullable=True)
+    packet_loss = db.Column(db.Float, nullable=True)
+
+    puertos_abiertos = db.Column(db.Integer, default=0)
+
+    estado = db.Column(db.String(20), default="desconocido")
+    riesgo = db.Column(db.String(20), default="Desconocido")
+
+    dispositivo = db.relationship("Dispositivo", backref=db.backref("escaneos_dispositivo", lazy=True))
+
+    def __repr__(self):
+        return f"<DispositivoEscaneo {self.dispositivo_id} {self.fecha} act={getattr(self,"actividad_score",None)} puertos={self.puertos_abiertos}>"
