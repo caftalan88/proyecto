@@ -1,12 +1,39 @@
 import socket
+
+from app.oui_lookup import vendor_from_mac
 import ipaddress
 import time
 import select
 import subprocess
-from scapy.all import ARP, Ether, IP, ICMP, sr1, srp, TCP
+from scapy.all import ARP, Ether, IP, ICMP, sr1, srp, TCP, sniff
 from datetime import datetime, timedelta
 
 PUERTOS_CRITICOS = {23, 2323, 7547, 445, 21, 3389}  
+
+def medir_consumo_mb(ip: str, duration: float = 1.5):
+    up_bytes = 0
+    down_bytes = 0
+    try:
+        pkts = sniff(filter=f"host {ip}", timeout=duration, store=True)
+        for p in pkts:
+            if IP in p:
+                try:
+                    sz = len(p)
+                except Exception:
+                    sz = 0
+                if p[IP].src == ip:
+                    up_bytes += sz
+                elif p[IP].dst == ip:
+                    down_bytes += sz
+    except Exception:
+        return (0.0, 0.0, 0.0)
+
+    mb = 1024.0 * 1024.0
+    up = round(up_bytes / mb, 3)
+    down = round(down_bytes / mb, 3)
+    total = round((up_bytes + down_bytes) / mb, 3)
+    return (up, down, total)
+
 
 def clasificar_dispositivo(ip_info, dispositivo_actual=None):
 
@@ -491,5 +518,22 @@ def fusionar_por_ip(*listas):
             nuevo_origen = d.get("origen", "desconocido")
             if nuevo_origen not in f["origenes"]:
                 f["origenes"].append(nuevo_origen)
+
+
+    for ip, f in fusion.items():
+        up_mb, down_mb, total_mb = medir_consumo_mb(ip, duration=1.2)
+        f['consumo_upload_mb'] = up_mb
+        f['consumo_download_mb'] = down_mb
+        f['consumo_total_mb'] = total_mb
+
+        mac = f.get("mac") or ""
+        vendor = vendor_from_mac(mac) if mac else None
+        if vendor:
+            f["fabricante"] = vendor
+            if (f.get("nombre") or "").strip().lower() in ("", "desconocido"):
+                f["nombre"] = vendor
+            if (f.get("tipo") or "").strip().lower() in ("", "desconocido"):
+                f["tipo"] = inferir_tipo_por_nombre(f.get("nombre"))
+
 
     return list(fusion.values())
