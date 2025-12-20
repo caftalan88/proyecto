@@ -3,9 +3,8 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Monitoreo de Seguridad IoT Doméstico</title>
+    <title>NetGuard | Dashboard</title>
 
-    
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
@@ -41,24 +40,60 @@
     </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200">
+<div class="min-h-screen flex">
+  <aside class="fixed inset-y-0 left-0 w-64 bg-slate-900/80 backdrop-blur border-r border-slate-700/60 p-4">
+    <div class="flex items-center gap-3 mb-6">
+      <div class="w-10 h-10 rounded-2xl bg-emerald-500/15 flex items-center justify-center text-emerald-400">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6" fill="currentColor" aria-hidden="true">
+          <path d="M12 2l7 4v6c0 5-3.5 9.5-7 10-3.5-.5-7-5-7-10V6l7-4zm0 3.1L7 7.7V12c0 3.8 2.6 7.2 5 7.8 2.4-.6 5-4 5-7.8V7.7l-5-2.6zm-1 5.4l3 0 0 2-3 0v-2zm0-3l3 0 0 2-3 0v-2z"/>
+        </svg>
+      </div>
+      <div class="leading-tight">
+        <div class="text-lg font-bold text-white">NetGuard</div>
+        <div class="text-xs text-slate-300">Seguridad para hogares</div>
+      </div>
+    </div>
+
+    <nav class="space-y-2">
+      <a href="{{ url_for('main.dashboard') }}"
+         class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold text-slate-200 hover:bg-slate-800/70">
+        <span>🏠</span><span>Dashboard</span>
+      </a>
+      <a href="{{ url_for('main.listar_dispositivos') }}"
+         class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold text-slate-200 hover:bg-slate-800/70">
+        <span>🖧</span><span>Resultados</span>
+      </a>
+      <a href="{{ url_for('main.historial') }}"
+         class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold text-slate-200 hover:bg-slate-800/70">
+        <span>🕘</span><span>Historial</span>
+      </a>
+      <a href="{{ url_for('main.exportar_informe_excel') }}"
+         class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold
+                text-emerald-400 hover:bg-slate-800/70">
+        <span>📊</span><span>Informe</span>
+      </a>
+      <a href="{{ url_for('main.sugerencias_ciberseguridad') }}"
+         class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold text-sky-300 hover:bg-slate-800/70">
+        <span>🛡️</span><span>Sugerencias</span>
+      </a>
+    </nav>
+  </aside>
+
+  <main class="flex-1 ml-64 p-6">
+
 <div class="relative flex h-auto min-h-screen w-full flex-col">
   <div class="layout-container flex h-full grow flex-col">
     <div class="px-4 sm:px-6 lg:px-8 xl:px-40 flex flex-1 justify-center py-5">
       <div class="layout-content-container flex flex-col w-full max-w-6xl flex-1">
-        
+
         <header class="flex items-center justify-between whitespace-nowrap border-b border-gray-200 dark:border-b-[#233648] px-6 py-4">
           <div class="flex items-center gap-3">
             <div class="size-6 text-primary">
               <span class="material-symbols-outlined text-3xl">security</span>
             </div>
             <h1 class="text-gray-900 dark:text-white text-xl font-bold leading-tight tracking-tight">
-              Monitoreo de Seguridad IoT Doméstico
-              <nav class="flex items-center gap-4 text-sm">
-                <a href="{{ url_for('main.dashboard') }}" class="hover:text-primary">Dashboard</a>
-                <a href="{{ url_for('main.resultado_escaneo') }}" class="hover:text-primary">Resultado de escaneo</a>
-                <a href="{{ url_for('main.historial_escaneos') }}" class="hover:text-primary">Historial</a>
-              </nav>
-            </h1>
+              NetGuard
+</h1>
           </div>
           <button
             id="btn-escanear"
@@ -70,7 +105,7 @@
         </header>
 
         <main class="flex-grow p-4 sm:p-6">
-          
+
           <div id="estado-vacio" class="flex flex-col p-4 {% if hay_resultados %}hidden{% endif %}">
             <div class="flex flex-col items-center gap-6 rounded-lg border-2 border-dashed border-gray-300 dark:border-[#324d67] px-6 py-14 text-center">
               <div class="flex max-w-[480px] flex-col items-center gap-2">
@@ -84,10 +119,8 @@
             </div>
           </div>
 
-          
           <div id="estado-resultado" class="flex flex-col gap-8 mt-4 {% if not hay_resultados %}hidden{% endif %}">
 
-            
             <section id="resumen-estadistico" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="bg-white dark:bg-[#111a22] rounded-lg shadow p-4 flex flex-col gap-1">
                 <p class="text-xs uppercase text-gray-500 dark:text-gray-400 font-semibold">
@@ -115,8 +148,7 @@
               </div>
             </section>
 
-            
-            <section id="bloque-progreso" 
+            <section id="bloque-progreso"
                      class="flex flex-col gap-3 p-4 bg-white dark:bg-[#111a22] rounded-lg shadow">
               <div class="flex gap-6 justify-between items-center">
                 <p class="text-gray-800 dark:text-white text-base font-medium leading-normal"
@@ -141,7 +173,6 @@
               </div>
             </section>
 
-            
             <section class="px-0 sm:px-1 @container">
               <div class="flex overflow-hidden rounded-lg border border-gray-200 dark:border-[#324d67] bg-background-light dark:bg-[#111a22]">
                 <table class="w-full text-left">
@@ -153,6 +184,11 @@
                       <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-white">
                         Dirección MAC
                       </th>
+
+                      <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-white">
+                        Fabricante
+                      </th>
+
                       <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-white">
                         Hostname
                       </th>
@@ -164,50 +200,60 @@
                       </th>
                     </tr>
                   </thead>
-                  <tbody id="tabla-dispositivos-body" 
+
+                  <tbody id="tabla-dispositivos-body"
                          class="divide-y divide-gray-200 dark:divide-[#324d67]">
                     {% for d in dispositivos %}
                       <tr>
-                       <td class="px-6 py-3 text-sm text-gray-200">{{ d.ip }}</td>
-                       <td class="px-6 py-3 text-sm text-gray-200">
-                         {{ d.mac or 'MAC desconocida' }}
-                       </td>
-                       <td class="px-6 py-3 text-sm text-gray-200">
-                         {{ d.nombre or 'Desconocido' }}
-                       </td>
-                       <td class="px-6 py-3 text-sm">
-                         {% if d.estado == 'nuevo' %}
-                           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full
-                                        text-xs font-medium bg-amber-500/10 text-amber-400">
-                             ● Nuevo
-                           </span>
-                         {% elif d.estado == 'bloqueado' %}
-                           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full
-                                        text-xs font-medium bg-red-500/10 text-red-400">
-                             ● Bloqueado
-                           </span>
-                         {% else %}
-                           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full
-                                        text-xs font-medium bg-emerald-500/10 text-emerald-400">
-                             ● Seguro
-                           </span>
-                         {% endif %}
-                       </td>
-                       <td class="px-6 py-3 text-sm">
-                         <a href="{{ url_for('main.detalle_dispositivo', dispositivo_id=d.id) }}"
-                            class="inline-flex items-center rounded-lg bg-primary px-3 py-1
-                                   text-xs font-semibold text-white hover:bg-primary/90">
-                           Ver detalle
-                         </a>
-                       </td>
-                     </tr>
+                        <td class="px-6 py-3 text-sm text-gray-200">{{ d.ip }}</td>
+
+                        <td class="px-6 py-3 text-sm text-gray-200">
+                          {{ d.mac or 'MAC desconocida' }}
+                        </td>
+
+                        <td class="px-6 py-3 text-sm text-gray-200 max-w-[180px] truncate"
+                            title="{{ d.fabricante if d.fabricante is defined else '' }}">
+                          {{ d.fabricante if d.fabricante is defined else 'Desconocido' }}
+                        </td>
+
+                        <td class="px-6 py-3 text-sm text-gray-200">
+                          {{ d.nombre or 'Desconocido' }}
+                        </td>
+
+                        <td class="px-6 py-3 text-sm">
+                          {% if d.estado == 'nuevo' %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full
+                                         text-xs font-medium bg-amber-500/10 text-amber-400">
+                              ● Nuevo
+                            </span>
+                          {% elif d.estado == 'bloqueado' %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full
+                                         text-xs font-medium bg-red-500/10 text-red-400">
+                              ● Bloqueado
+                            </span>
+                          {% else %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full
+                                         text-xs font-medium bg-emerald-500/10 text-emerald-400">
+                              ● Seguro
+                            </span>
+                          {% endif %}
+                        </td>
+
+                        <td class="px-6 py-3 text-sm">
+                          <a href="{{ url_for('main.detalle_dispositivo', dispositivo_id=d.id) }}"
+                             class="inline-flex items-center rounded-lg bg-primary px-3 py-1
+                                    text-xs font-semibold text-white hover:bg-primary/90">
+                            Ver detalle
+                          </a>
+                        </td>
+                      </tr>
                     {% endfor %}
                   </tbody>
+
                 </table>
               </div>
             </section>
 
-            
             <section class="px-0 sm:px-1">
               <div class="rounded-lg border border-gray-200 dark:border-[#324d67] bg-background-light dark:bg-[#111a22]">
                 <div class="px-4 py-3 border-b border-gray-200 dark:border-[#324d67] flex items-center justify-between">
@@ -233,7 +279,7 @@
                         </th>
                       </tr>
                     </thead>
-                    <tbody id="tabla-historial-body" 
+                    <tbody id="tabla-historial-body"
                            class="divide-y divide-gray-200 dark:divide-[#324d67]">
                       {% for e in ultimos_escaneos %}
                         <tr>
@@ -247,7 +293,7 @@
                             {{ e.dispositivos_vulnerables }}
                           </td>
                         </tr>
-                      {% endfor %}                      
+                      {% endfor %}
                     </tbody>
                   </table>
                 </div>
@@ -262,7 +308,10 @@
   </div>
 </div>
 
-
 <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+  </main>
+</div>
+
 </body>
 </html>
